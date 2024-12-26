@@ -1,0 +1,89 @@
+esphome:
+  name: vayutra-dev
+  friendly_name: vayutra-dev
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+mdns:
+  
+# Enable logging
+logger:
+  level: VERY_VERBOSE
+
+#Enable Home Assistant API
+api:
+  encryption:
+    key: "c0f3LrCZwb5TBrW7GZUIwaI7rnwp8VNW+KbQdDJ3S8U="
+
+ota:
+  - platform: esphome
+    password: "0338177d4406a086f65ef57e6b5c1188"
+
+wifi:
+  ssid: MyHomeNetwork
+  password: VerySafePassword
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Vayutra Fallback Hotspot"
+    password: "4mU7SkseZRYK"
+
+captive_portal:
+    
+web_server:
+
+switch:
+  - platform: gpio
+    pin:
+      number: 8 # on-board LED GPIO8 is used
+      inverted: true
+      mode: output
+    name: "Blue LED"
+    id: led
+
+font:
+    # gfonts://family[@weight]
+  - file: "gfonts://Roboto"
+    id: roboto_20
+    size: 20
+
+i2c:
+  sda: GPIO07
+  scl: GPIO06
+  scan: true
+  frequency: 30kHz
+  id: bus_a
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: 0x3C
+    lambda: |-
+      it.print(0, 0, id(roboto_20), "Hello World!");
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal Sensor"
+    update_interval: 30s
+
+  - platform: aht10
+    variant: AHT20
+    temperature:
+      name: "DHT20 Temperature"
+    humidity:
+      name: "DHT20 Humidity"
+    update_interval: 30s
+
+  - platform: ags02ma
+    tvoc:
+      name: AGS02MA TVOC
+    update_interval: 30s
+
+  - platform: acd10
+    co2:
+      name: ACD10 CO2
+    temperature:
+      name: ACD10 temperature
